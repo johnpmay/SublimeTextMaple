@@ -1,0 +1,89 @@
+%YAML 1.2
+---
+# See http://www.sublimetext.com/docs/3/syntax.html
+file_extensions:
+  - maple
+scope: source.maple
+contexts:
+  main:
+
+    - include: comments
+
+    # Strings begin and end with quotes, and use backslashes as an escape
+    # character
+    - match: '"'
+      scope: punctuation.definition.string.begin.maple
+      push: double_quoted_string
+
+    # Names begin and end with quotes, and use backslashes as an escape
+    # character
+    - match: '`'
+      scope: punctuation.definition.name.begin.maple
+      push: double_quoted_name
+
+    # 36 Language Keywords 
+    - match: '\b(assuming|break|by|catch|description|do|done|elif|else|end|error|export|fi|finally|for|from|global|if|in|local|module|next|od|option|options|proc|quit|read|return|save|stop|then|to|try|use|uses|while)\b'
+      scope: keyword.control.maple
+
+    # 11 operator keywords  
+    - match: '\b(and|or|xor|not|implies|union|intersect|subset|minus|mod|assuming)\b'
+      scope: keyword.operator.maple
+
+    # operation symbols
+    - match: ('|,|&|\*|\+|-|/|\^|@|@@|:=|:-|~|;|:|::|\|\||\.|\.\.|\$|->|%)
+      scope: keyword.operator.arithmetic.maple
+    - match: (=|<>|>|<|>=|<=)
+      scope: keyword.operator.comparison.maple
+
+    # Numbers
+    - match: '\b(-)?[0-9.]+\b'
+      scope: constant.numeric.maple
+
+    # Symbolic Constants
+    - match: '\b(Catalan|FAIL|false|gamma|I|infinity|NULL|Pi|true|undefined)\b'
+      scape: constant.keyword.maple
+
+  double_quoted_string:
+    - meta_scope: string.quoted.double.maple
+    - match: '\\.'
+      scope: constant.character.escape.maple
+    - match: '"'
+      scope: punctuation.definition.string.end.maple
+      pop: true
+
+  double_quoted_name:
+    - meta_scope: name.quoted.double.maple
+    - match: '\\.'
+      scope: constant.name_character.escape.maple
+    - match: '`'
+      scope: punctuation.definition.name.end.maple
+      pop: true   
+
+
+  # single and multi-line comments
+  comments:
+    - match: (#).*$\n?
+      scope: comment.line.pound.maple
+      captures:
+        1: punctuation.definition.comment.maple
+    - match: \(\*
+      captures:
+        0: punctuation.definition.comment.maple
+      push:
+        - meta_scope: comment.block.maple
+        - match: \*\)
+          captures:
+            0: punctuation.definition.comment.maple
+          pop: true
+        - include: comments.nested
+  comments.nested:
+    - match: \(\*
+      captures:
+        0: punctuation.definition.comment.maple
+      push:
+        - meta_scope: comment.block.maple
+        - match: \*\)
+          captures:
+            0: punctuation.definition.comment.maple
+          pop: true
+        - include: comments.nested
