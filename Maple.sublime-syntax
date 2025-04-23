@@ -41,7 +41,7 @@ contexts:
 
     # Symbolic Constants
     - match: '\b(Catalan|FAIL|false|gamma|I|infinity|NULL|Pi|true|undefined)\b'
-      scape: constant.keyword.maple
+      scope: constant.keyword.maple
 
   double_quoted_string:
     - meta_scope: string.quoted.double.maple
